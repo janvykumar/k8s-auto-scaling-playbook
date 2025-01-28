@@ -1,0 +1,21 @@
+---
+- name: Scale Kubernetes Deployment Based on Pod Health
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Set the Kubernetes namespace (default in this case)
+      set_fact:
+        namespace: "default"
+
+    - name: Scale the affected deployment based on alert
+      k8s:
+        kubeconfig: /path/to/kubeconfig  # Optional, if not using default kubeconfig
+        state: present
+        definition:
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: "{{ deployment_name }}"  # This will be passed from Dynatrace
+            namespace: "{{ namespace }}"
+          spec:
+            replicas: 3  # Increase replicas to ensure availability
